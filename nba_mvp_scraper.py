@@ -108,7 +108,7 @@ class NBADataScraper:
                     df = df.rename(columns={old_col: new_col})
             
             # Select relevant columns (using new names)
-            columns = ['Player', 'Team', 'Position', 'Games', 'Minutes', 'Points', 
+            columns = ['Player', 'Team', 'Position', 'Season', 'Games', 'Minutes', 'Points', 
                       'Rebounds', 'Assists', 'Steals', 'Blocks', 'Turnovers', 
                       'FG_Pct', '3P_Pct', 'FT_Pct']
             
@@ -212,6 +212,9 @@ class NBADataScraper:
             # Add MVP column
             merged_stats['MVP'] = merged_stats['Player'].apply(lambda x: 1 if x == mvp_winner else 0)
             
+            # Add Season column
+            merged_stats['Season'] = year
+            
             logging.info(f"Successfully merged all data for {year}")
             return merged_stats
         except Exception as e:
@@ -257,6 +260,12 @@ def main():
     final_df = scraper.scrape_all_seasons()
     
     if final_df is not None:
+        # Reorder columns to put Season first
+        cols = final_df.columns.tolist()
+        cols.remove('Season')
+        cols = ['Season'] + cols
+        final_df = final_df[cols]
+        
         # Save to CSV
         output_file = 'nba_mvp_data.csv'
         final_df.to_csv(output_file, index=False)
