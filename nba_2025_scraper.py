@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import logging
 import time
+from io import StringIO
 
 # Set up logging with more detailed format
 logging.basicConfig(
@@ -46,8 +47,8 @@ class NBADataScraper:
                 logging.error(f"Could not find basic stats table for {year}")
                 return None
                 
-            # Convert table to DataFrame
-            df = pd.read_html(str(stats_table))[0]
+            # Convert table to DataFrame using StringIO
+            df = pd.read_html(StringIO(str(stats_table)))[0]
             
             # Print available columns for debugging
             logging.info(f"Available columns for {year}: {df.columns.tolist()}")
@@ -111,8 +112,8 @@ class NBADataScraper:
                 logging.error(f"Could not find advanced stats table for {year}")
                 return None
                 
-            # Convert table to DataFrame
-            df = pd.read_html(str(stats_table))[0]
+            # Convert table to DataFrame using StringIO
+            df = pd.read_html(StringIO(str(stats_table)))[0]
             
             # Print available columns for debugging
             logging.info(f"Available advanced columns for {year}: {df.columns.tolist()}")
@@ -216,7 +217,7 @@ def main():
         # Print some basic statistics about the dataset
         logging.info(f"\nDataset Statistics:")
         logging.info(f"Total number of players: {len(season_data)}")
-        logging.info(f"Season: {year}")
+        logging.info(f"Season: {season_data['Season'].iloc[0]}")
     else:
         logging.error("Failed to create the dataset")
 
